@@ -35,6 +35,17 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    },
+    // 解决开发环境的跨域问题
+    proxy: {
+      // 当本地请求有api的时候，就会代理我们的请求地址向另外一个服务器发出请求，可以代理多个
+
+      '/api': {
+        // 跨域请求的地址
+        target: 'http://ihrm-java.itheima.net/',
+        // 值为true才表示开启跨域
+        changeOrugin: true
+      }
     }
   },
   configureWebpack: {
