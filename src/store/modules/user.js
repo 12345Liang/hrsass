@@ -1,4 +1,4 @@
-import { login, getUserInfo } from '@/api/user'
+import { login, getUserInfo, getUserDetailById } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 const state = {
   // 初始化的时候从缓存中读取状态 并赋值到初始化的状态上
@@ -32,9 +32,14 @@ const actions = {
     context.commit('setToken', result)
   },
   async getUserInfo(context) {
-    const result = await getUserInfo() // 获取返回值
-    context.commit('setUserInfo', result) // 将整个的个人信息设置到用户的vuex数据中
+    const result = await getUserInfo()// 获取返回值
+    const baseInfo = getUserDetailById(result.userId)
+    context.commit('setUserInfo', { ...result, ...baseInfo }) // 将整个的个人信息设置到用户的vuex数据中
     return result // 这里为什么要返回 为后面埋下伏笔
+  },
+  logout(context) {
+    context.commit('removeToken')
+    context.commit('reomveUserInfo')
   }
 }
 export default {
