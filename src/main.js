@@ -15,9 +15,16 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import * as directives from '@/directives'
+import * as filters from '@/filters'
+import Component from '@/components'
+Vue.use(Component)
 
 Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key])
+})
+Object.keys(filters).forEach(key => {
+  // 注册过滤器
+  Vue.filter(key, filters[key])
 })
 
 /**
