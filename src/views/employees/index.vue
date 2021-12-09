@@ -3,7 +3,7 @@
     <div class="app-container">
       <page-tools :show-before="true">
         <span slot="before">共{{ page.total }}条记录</span>
-        <template slot="after">
+        <template v-slot:after>
           <el-button size="small" type="warning" @click="$router.push('/import')">导入</el-button>
           <el-button size="small" type="danger" @click="exportData">导出</el-button>
           <el-button size="small" type="primary" @click="showDialog = true">新增员工</el-button>
@@ -33,7 +33,7 @@
           </el-table-column>
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template slot-scope="{ row }">
-              <el-button type="text" size="small">查看</el-button>
+              <el-button type="text" size="small" @click="$router.push(`/employees/detail/${row.id}`)">查看</el-button>
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
@@ -60,7 +60,7 @@
 
 <script>
 import { getEmployeeList, delEmployee } from '@/api/employees'
-import EmployeeEnum from '@/api/constant/employees'
+import EmployeeEnum from '@/api/constant/employees' // Enum 是枚举的意思
 import AddEmployee from './components/add-employee.vue'
 export default {
   components: {
@@ -70,7 +70,7 @@ export default {
     return {
       // value: true,
       loading: false,
-      list: [], // 接数据的
+      list: [], // 接收后端传回的列表数据rows，在表单table中进行绑定数据
       page: {
         page: 1, // 当前页码
         size: 10,
@@ -90,8 +90,8 @@ export default {
     async getEmployeeList() {
       this.loading = true
       const { total, rows } = await getEmployeeList(this.page)
+      this.list = rows // rows是后端传回来的列表数据，
       this.page.total = total
-      this.list = rows
       this.loading = false
     },
     formatEmployment(row, column, cellValue, index) {
@@ -134,8 +134,14 @@ export default {
           bookType: 'xlsx'
         })
       })
+    },
+    formatJson(headers, rows) {
+      return rows.map(item => {
+        return Object.keys(headers).map(key => {
+          return item[headers[key]]
+        })
+      })
     }
-
   }
 }
 </script>
