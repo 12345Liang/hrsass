@@ -1,4 +1,8 @@
 import request from '@/utils/request'
+
+/** *
+ *获取角色列表
+ * ******/
 export function getRoleList(params) {
   return request({
     url: '/sys/role',
@@ -33,5 +37,15 @@ export function addRole(data) {
     url: '/sys/role',
     data,
     method: 'post'
+  })
+}
+/** *
+ * 给角色分配权限
+ * *********/
+export function assignPerm(data) {
+  return request({
+    url: '/sys/role/assignPrem',
+    method: 'put',
+    data
   })
 }
