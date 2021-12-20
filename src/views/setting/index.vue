@@ -195,7 +195,7 @@ export default {
         label: 'name'
       },
       permData: [], // 专门用来接收权限数据 树形数据
-      selectCheck: [], // 定义一个数组来接收 已经选中的节点
+      selectCheck: [], // 定义一个数组来接收当前角色所拥有的的权限
       roleId: null // 用来记录分配角色的id
     }
   },
@@ -261,6 +261,7 @@ export default {
       this.$refs.roleForm.resetFields()
       this.showDialog = false
     },
+    // 首先要获取权限列表的信息，以及当前角色所拥有的权限，进行权限的回写
     async assignPerm(id) {
       this.permData = transListToTreeData(await getPermissionList(), '0')
       this.roleId = id
@@ -271,6 +272,7 @@ export default {
       this.showPermDialog = true
     },
     async btnPermOK() {
+      // 点击确定时，给角色分配权限，
       await assignPerm({ permIds: this.$refs.permTree.getCheckedKeys(), id: this.roleId })
       this.showPermDialog = false
     },

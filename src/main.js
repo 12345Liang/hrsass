@@ -16,8 +16,10 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import * as directives from '@/directives'
 import * as filters from '@/filters'
+import checkPermission from '@/mixin/checkPermission'
 import Component from '@/components'
 Vue.use(Component)
+Vue.mixin(checkPermission)
 
 Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key])

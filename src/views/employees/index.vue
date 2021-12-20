@@ -149,6 +149,7 @@ export default {
     },
     async editRole(id) {
       this.userId = id
+      // 点击角色时调用子组件中的方法，获取用户拥有的角色roleIds
       await this.$refs.assignRole.getUserDetailById(id)
       this.showRoleDialog = true
     }

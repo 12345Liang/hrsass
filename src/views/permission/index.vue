@@ -4,13 +4,14 @@
       <page-tools>
         <el-button slot="after" type="primary" size="small" @click="addPermission(1, '0')">添加权限</el-button>
       </page-tools>
+      <!-- row-key作为树形节点，定义一个唯一标识符 -->
       <el-table border :data="list" row-key="id">
         <el-table-column label="名称" prop="name" />
         <el-table-column align="center" label="标识" prop="code" />
         <el-table-column align="center" label="描述" prop="description" />
         <el-table-column align="center" label="操作">
           <template slot-scope="{ row }">
-            <!-- type为1 的时候才显示添加 -->
+            <!-- type为1 的时候在根页面添加权限，type=2的时候在子页面添加权限 -->
             <el-button v-if="row.type===1" type="text" @click="addPermission(2, row.id)">添加</el-button>
             <el-button type="text" @click="editPermission(row.id)">编辑</el-button>
             <el-button type="text" @click="delPermission(row.id)">删除</el-button>
@@ -79,19 +80,24 @@ export default {
     this.getPermissionList()
   },
   methods: {
+    // 获取权限列表以树形结构渲染到页面上
     async getPermissionList() {
       this.list = transListToTreeData(await getPermissionList(), '0')
     },
+    // 添加权限
     addPermission(type, pid) {
       this.formData.type = type
       this.formData.pid = pid
       this.showDialog = true
       console.log('添加权限的formData=======>', this.formData)
     },
+    // 删除权限
     async delPermission(id) {
       try {
         await this.$confirm('确定删除该数据吗？')
         await delPermission(id)
+        // console.log('删除权限的结果=====>', result)
+        // 删除之后需要重新拉取列表信息
         this.getPermissionList()
         this.$message.success('删除成功')
       } catch (error) {
@@ -101,8 +107,10 @@ export default {
     btnOK() {
       this.$refs.permissionForm.validate().then(() => {
         if (this.formData.id) {
+          // 有Id为编辑权限
           return updatePermission(this.formData)
         }
+        // 无id 为新增权限，返回新增权限
         return addPermission(this.formData)
       }).then(() => {
         if (this.formData.id) {
@@ -110,7 +118,7 @@ export default {
         } else {
           this.$message.success('添加权限成功')
         }
-
+        // 重新拉取数据
         this.getPermissionList()
         this.showDialog = false
       })
@@ -128,6 +136,7 @@ export default {
       this.showDialog = false
     },
     async editPermission(id) {
+      // 编辑权限时先让数据回写
       this.formData = await getPermissionDetail(id)
       this.showDialog = true
       console.log('编辑的formData=======>', this.formData)

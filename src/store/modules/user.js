@@ -1,4 +1,5 @@
 import { login, getUserInfo, getUserDetailById } from '@/api/user'
+import { resetRouter } from '@/router'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 const state = {
   // 初始化的时候从缓存中读取状态 并赋值到初始化的状态上
@@ -31,15 +32,23 @@ const actions = {
     const result = await login(data)
     context.commit('setToken', result)
   },
+  // 登录时获取用户的信息
   async getUserInfo(context) {
     const result = await getUserInfo()// 获取返回值
+    console.log('用户的数据=======>', result)
     const baseInfo = getUserDetailById(result.userId)
     context.commit('setUserInfo', { ...result, ...baseInfo }) // 将整个的个人信息设置到用户的vuex数据中
     return result // 这里为什么要返回 为后面埋下伏笔
   },
   logout(context) {
+    // 删除token
     context.commit('removeToken')
+    // 删除用户信息
     context.commit('reomveUserInfo')
+    // 重置路由
+    resetRouter()
+    // 子模块调用子模块，用到第三个参数{ root: true },
+    context.commit('permission/setRoutes', [], { root: true })
   }
 }
 export default {
