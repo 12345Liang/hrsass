@@ -2,8 +2,8 @@
   <div class="dashboard-container">
     <div class="app-container">
       <el-card>
-        <el-tabs>
-          <el-tab-pane label="角色管理">
+        <el-tabs @tab-click="ddd">
+          <el-tab-pane label="角色管理" name="first">
             <el-row style="height: 60px">
               <el-button
                 icon="el-icon-plus"
@@ -62,7 +62,7 @@
               />
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="公司信息">
+          <el-tab-pane label="公司信息" name="second">
             <el-alert
               title="对公司名称、公司地址、营业执照、公司地区的更新，将使得公司资料被重新审核，请谨慎修改"
               type="info"
@@ -207,6 +207,14 @@ export default {
     this.getCompanyInfo()
   },
   methods: {
+    ddd(tab, event) {
+      console.log(tab, event)
+      if (tab.name === 'first') {
+        console.log('11111')
+      } else {
+        console.log('22222')
+      }
+    },
     async getRoleList() {
       const { total, rows } = await getRoleList(this.page)
       this.page.total = total
